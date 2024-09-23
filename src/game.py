@@ -168,6 +168,7 @@ class Game(arcade.Window):
             if key == 32:
                 self.setup()
                 self.state = GameStates.RUNNING
+                return
             elif key == ord("q"):
                 raise SystemExit
 
