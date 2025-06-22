@@ -7,6 +7,7 @@ import arcade
 
 import src.word
 import src.star
+from src.globals import *
 
 class GameStates(Enum):
     GAME_OVER = 0
@@ -15,7 +16,7 @@ class GameStates(Enum):
 class Game(arcade.Window):
     def __init__(self, width, height, words, word_rows_count=20):
         super().__init__(width, height, title="Space Typer")
-        arcade.set_background_color((5, 2, 27))
+        arcade.set_background_color(BG_COLOR)
 
         self.screen_width = width
         self.screen_height = height
@@ -162,6 +163,8 @@ class Game(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         if key > 127:
+            if key == arcade.key.ESCAPE:
+                raise SystemExit
             return
 
         if self.state == GameStates.GAME_OVER:
@@ -181,7 +184,7 @@ class Game(arcade.Window):
             if self.focus_word.word[0].lower() == chr(key):
                 self.focus_word.attack()
 
-        if self.focus_word.word == "":
+        if self.focus_word != None and self.focus_word.empty:
             self.word_list.discard(self.focus_word)
             self.focus_word = None
             self.score += 1

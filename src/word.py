@@ -15,3 +15,7 @@ class Word:
     
     def attack(self):
         self.word = self.word[1:]
+    
+    @property
+    def empty(self):
+        return self.word == ""
