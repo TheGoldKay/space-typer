@@ -17,7 +17,6 @@ class Game(arcade.Window):
     def __init__(self, width, height, words, word_rows_count=20):
         super().__init__(width, height, title="Space Typer")
         arcade.set_background_color(BG_COLOR)
-
         self.screen_width = width
         self.screen_height = height
         self.words = words
@@ -32,6 +31,8 @@ class Game(arcade.Window):
 
         self.word_list = set()
         self.star_list = set()
+        
+        self.occupied_rows = set()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -94,12 +95,13 @@ class Game(arcade.Window):
     def create_word(self):
         # Find a row that's currently not occupied by another word.
         row = int()
-        occupied_rows = set()
+        #occupied_rows = set()
         while True:
             row = random.randrange(self.word_rows_count)
-            for word in self.word_list:
-                occupied_rows.add(word.row)
-            if row not in occupied_rows:
+            #for word in self.word_list:
+            #    occupied_rows.add(word.row)
+            if row not in self.occupied_rows:#occupied_rows:
+                self.occupied_rows.add(row)
                 break
         
         # Find a word that starts with a character that is not the first
@@ -135,6 +137,7 @@ class Game(arcade.Window):
                     self.lives -= 1
 
                     self.word_list.discard(word)
+                    self.occupied_rows.discard(word.row)
                     self.create_word()
             
             if self.lives <= 0:
@@ -168,7 +171,7 @@ class Game(arcade.Window):
             return
 
         if self.state == GameStates.GAME_OVER:
-            if key == 32:
+            if key == 32: # SPACE
                 self.setup()
                 self.state = GameStates.RUNNING
                 return
@@ -181,11 +184,12 @@ class Game(arcade.Window):
                 self.focus_word.in_focus = True
                 self.focus_word.attack()
         else:
-            if self.focus_word.word[0].lower() == chr(key):
+            if self.focus_word.first_letter_typed(key):
                 self.focus_word.attack()
 
         if self.focus_word != None and self.focus_word.empty:
             self.word_list.discard(self.focus_word)
+            self.occupied_rows.discard(self.focus_word.row)
             self.focus_word = None
             self.score += 1
             self.create_word()

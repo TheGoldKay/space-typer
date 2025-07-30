@@ -19,3 +19,6 @@ class Word:
     @property
     def empty(self):
         return self.word == ""
+
+    def first_letter_typed(self, key):
+        return self.word[0].lower() == chr(key)

@@ -1,6 +1,7 @@
 import arcade
 import argparse
 import yaml
+import ctypes
 
 from src.game import Game
 from src.globals import *
@@ -8,6 +9,10 @@ from src.globals import *
 
 def main(screen_width, screen_height, words):
     game = Game(screen_width, screen_height, words)
+    user32 = ctypes.windll.user32
+    monitor_width = user32.GetSystemMetrics(0)
+    monitor_height = user32.GetSystemMetrics(1)
+    game.set_location(monitor_width // 2 - screen_width // 2, monitor_height // 2 - screen_height // 2)
     game.setup()
     arcade.run()
 
